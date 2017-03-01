@@ -65,7 +65,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def mostRetweeted: Tweet = ???
+    def mostRetweeted: Tweet
   
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -104,6 +104,8 @@ abstract class TweetSet {
    * This method takes a function and applies it to every element in the set.
    */
   def foreach(f: Tweet => Unit): Unit
+
+  def isEmpty: Boolean
 }
 
 class Empty extends TweetSet {
@@ -122,6 +124,10 @@ class Empty extends TweetSet {
   def foreach(f: Tweet => Unit): Unit = ()
 
   def union(that: TweetSet): TweetSet = that
+
+  def mostRetweeted: Tweet = throw new java.util.NoSuchElementException("The tweet set is empty")
+
+  def isEmpty = true
 }
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
@@ -159,6 +165,21 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   }
 
   def union(that: TweetSet): TweetSet = ((left union right) union that) incl elem
+
+  def isEmpty = false
+
+  def mostRetweeted: Tweet = {
+    var list = List((elem, elem.retweets))
+    if (!left.isEmpty) {
+      val mostRetweetedLeft = left.mostRetweeted
+      list = (mostRetweetedLeft, mostRetweetedLeft.retweets) :: list
+    }
+    if (!right.isEmpty) {
+      val mostRetweetedRight = right.mostRetweeted
+      list = (mostRetweetedRight, mostRetweetedRight.retweets) :: list
+    }
+    list.maxBy(_._2)._1
+  }
 }
 
 trait TweetList {
@@ -187,7 +208,7 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-    lazy val googleTweets: TweetSet = ???
+  lazy val googleTweets: TweetSet = ???
   lazy val appleTweets: TweetSet = ???
   
   /**
