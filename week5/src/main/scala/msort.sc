@@ -16,4 +16,3 @@ def msort(xs: List[Int]): List[Int] = {
   }
 
 }
-
