@@ -86,7 +86,8 @@ object Anagrams {
    */
   def combinations(occurrences: Occurrences): List[Occurrences] = List() :: (for {
     occurence <- occurrences
-  } yield List(occurence))
+    i <- 1 to occurence._2
+  } yield List((occurence._1, i)))
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
    *
