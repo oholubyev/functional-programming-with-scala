@@ -57,7 +57,7 @@ object Anagrams {
   lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] = loadDictionary.
     map(w => (wordOccurrences(w), w)).
     groupBy(x => x._1).
-    map(x => (x._1, x._2.unzip._2))
+    map(x => (x._1, x._2.unzip._2)).withDefaultValue(List())
 
   /** Returns all the anagrams of a given word. */
   def wordAnagrams(word: Word): List[Word] = dictionaryByOccurrences(wordOccurrences(word))
@@ -156,14 +156,15 @@ object Anagrams {
    */
   def sentenceAnagrams(sentence: Sentence): List[Sentence] =
   {
-    def meaningfulWords(occs: Occurrences): List[Sentence] =
-      for {
+    def meaningfulWords(occs: Occurrences): List[Word] = {
+      (for {
         comb <- combinations(occs)
-        if !dictionaryByOccurrences(comb).isEmpty
         word <- dictionaryByOccurrences(comb)
-      } yield word :: meaningfulWords(subtract(occs, comb))
+        if dictionaryByOccurrences(comb).nonEmpty
+      } yield word :: meaningfulWords(subtract(occs, comb))).flatten
+    }
 
     if (sentence.isEmpty) List(List())
-    else meaningfulWords(sentenceOccurrences(sentence))
+    else List(meaningfulWords(sentenceOccurrences(sentence)))
   }
 }
