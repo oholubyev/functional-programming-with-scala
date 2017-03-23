@@ -160,12 +160,12 @@ object Anagrams {
       if (occurences.isEmpty) List()
       else for {
         combination <- combinations(occurences)
-        word <- dictionaryByOccurrences(combination)
+        words = dictionaryByOccurrences(combination)
+        word <- words if words.nonEmpty
         remainder = subtract(occurences, combination)
-        if dictionaryByOccurrences(combination).nonEmpty
       } yield {
-        println(meaningfulSentences(remainder).flatMap(word :: _))
-        meaningfulSentences(remainder).flatMap(word :: _)
+        println(word, remainder, meaningfulSentences(remainder).filter(_.nonEmpty).flatMap(word :: _))
+        meaningfulSentences(remainder).filter(_.nonEmpty).flatMap(word :: _)
       }
 
       if (sentence.isEmpty) List(List())
