@@ -156,21 +156,19 @@ object Anagrams {
    */
   def sentenceAnagrams(sentence: Sentence): List[Sentence] =
   {
-    def meaningfulSentences(occurences: Occurrences): List[Sentence] = {
-      for {
+    def meaningfulSentences(occurences: Occurrences): List[Sentence] =
+      if (occurences.isEmpty) List()
+      else for {
         combination <- combinations(occurences)
         word <- dictionaryByOccurrences(combination)
+        remainder = subtract(occurences, combination)
         if dictionaryByOccurrences(combination).nonEmpty
       } yield {
-        println(combination)
-//        println(combination, word, dictionaryByOccurrences(combination))
-        List("hello")
-//      meaningfulSentences(subtract(occurences, combination)).flatten
+        println(meaningfulSentences(remainder).flatMap(word :: _))
+        meaningfulSentences(remainder).flatMap(word :: _)
       }
-    }
-//      flatMap(list => word :: list)
 
-    if (sentence.isEmpty) List(List())
-    else meaningfulSentences(sentenceOccurrences(sentence))
+      if (sentence.isEmpty) List(List())
+      else meaningfulSentences(sentenceOccurrences(sentence))
   }
 }
