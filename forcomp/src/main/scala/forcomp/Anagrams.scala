@@ -154,20 +154,16 @@ object Anagrams {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
-//  {
-//    def meaningfulWords(occs: Occurrences): List[Word] =
-//      for {
-//        comb <- combinations(occs)
-//        word <- dictionaryByOccurrences(comb)
-//        if !dictionaryByOccurrences(comb).isEmpty
-//      } yield word :: meaningfulWords(subtract(occs, comb))
-//
-//
-//        if (sentence.isEmpty) List(List())
-//        else {
-//          sentenceOccurrences(sentence)
-//        }
-//      }
-//  }
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] =
+  {
+    def meaningfulWords(occs: Occurrences): List[Sentence] =
+      for {
+        comb <- combinations(occs)
+        if !dictionaryByOccurrences(comb).isEmpty
+        word <- dictionaryByOccurrences(comb)
+      } yield word :: meaningfulWords(subtract(occs, comb))
+
+    if (sentence.isEmpty) List(List())
+    else meaningfulWords(sentenceOccurrences(sentence))
+  }
 }
