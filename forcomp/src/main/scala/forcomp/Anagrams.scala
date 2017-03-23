@@ -91,7 +91,7 @@ object Anagrams {
       i <- 1 to growingHead._2
       rest <- combinations(occurrences drop split)
     } yield (growingHead._1, i) :: rest
-  }.toList
+  }.toSet.toList
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
    *
@@ -156,15 +156,21 @@ object Anagrams {
    */
   def sentenceAnagrams(sentence: Sentence): List[Sentence] =
   {
-    def meaningfulWords(occs: Occurrences): List[Word] = {
-      (for {
-        comb <- combinations(occs)
-        word <- dictionaryByOccurrences(comb)
-        if dictionaryByOccurrences(comb).nonEmpty
-      } yield word :: meaningfulWords(subtract(occs, comb))).flatten
+    def meaningfulSentences(occurences: Occurrences): List[Sentence] = {
+      for {
+        combination <- combinations(occurences)
+        word <- dictionaryByOccurrences(combination)
+        if dictionaryByOccurrences(combination).nonEmpty
+      } yield {
+        println(combination)
+//        println(combination, word, dictionaryByOccurrences(combination))
+        List("hello")
+//      meaningfulSentences(subtract(occurences, combination)).flatten
+      }
     }
+//      flatMap(list => word :: list)
 
     if (sentence.isEmpty) List(List())
-    else List(meaningfulWords(sentenceOccurrences(sentence)))
+    else meaningfulSentences(sentenceOccurrences(sentence))
   }
 }
