@@ -164,8 +164,14 @@ object Anagrams {
         word <- words if words.nonEmpty
         remainder = subtract(occurences, combination)
       } yield {
-        println(word, remainder, meaningfulSentences(remainder).filter(_.nonEmpty).flatMap(word :: _))
-        meaningfulSentences(remainder).filter(_.nonEmpty).flatMap(word :: _)
+        if (remainder.length == 5 && (word == "Linux" || word == "rulez")) {
+          println(word, remainder)
+          println(meaningfulSentences(remainder).filter(_.nonEmpty).flatMap(word :: _))
+        }
+        remainder match {
+          case List() => List(word)
+          case x :: xs => meaningfulSentences(remainder).filter(_.nonEmpty).flatMap(word :: _)
+        }
       }
 
       if (sentence.isEmpty) List(List())
