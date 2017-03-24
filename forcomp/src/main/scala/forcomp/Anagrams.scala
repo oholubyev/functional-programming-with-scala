@@ -163,16 +163,12 @@ object Anagrams {
         words = dictionaryByOccurrences(combination)
         word <- words if words.nonEmpty
         remainder = subtract(occurences, combination)
-      } yield {
-        if (remainder.length == 5 && (word == "Linux" || word == "rulez")) {
-          println(word, remainder)
-          println(meaningfulSentences(remainder).filter(_.nonEmpty).flatMap(word :: _))
+        remainingSentences = remainder match {
+          case List() => List(List())
+          case x :: xs => meaningfulSentences(remainder).filter(_.nonEmpty)
         }
-        remainder match {
-          case List() => List(word)
-          case x :: xs => meaningfulSentences(remainder).filter(_.nonEmpty).flatMap(word :: _)
-        }
-      }
+        remainingSentence <- remainingSentences
+      } yield word :: remainingSentence
 
       if (sentence.isEmpty) List(List())
       else meaningfulSentences(sentenceOccurrences(sentence))
